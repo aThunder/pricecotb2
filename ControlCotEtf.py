@@ -13,9 +13,9 @@ import json
 import urllib.request
 import sqlite3
 # import cotEtfSQLP
-import cotEtfCSV
+# import cotEtfCSV
 
-class BuildCot():
+class BuildCotAll():
 
     def __init__(self):
         self.conn = sqlite3.connect('allCotEtf.db')
@@ -31,6 +31,10 @@ class BuildCot():
         # NetRptable REAL,NetNonRptable REAL
 
             # db.execute('insert into test(t1, i1) values(?,?)', ('one', 1)) ## sample for format syntax
+
+    def createSQLAlt1(self):
+        import cotCotSQL
+        cotCotSQL.main()
 
     def populateTables(self,createOrUpdate):
         self.createOrUpdate = createOrUpdate
@@ -50,7 +54,7 @@ class BuildCot():
         counter = 1
         print()
         print()
-        print("COT Table has been {0} for: ".format(self.createOrUpdate))
+        print("COT Table has been {0}/populated for: ".format(self.createOrUpdate))
         for i in self.etfList:
             print("{0}: {1}".format(counter,i))
             counter +=1
@@ -58,7 +62,7 @@ class BuildCot():
     def createEtfCsv(self):
         print()
         print()
-        # import cotEtfCSV
+        import cotEtfCSV
         startDate = input("ETF Data: Enter start date. Format: yyyymmdd (example: 20150115): ")
         endDate = input("Enter end date (Leave blank for most recent date): ")
         cotEtfCSV.correspondingSymbols(startDate,endDate)
@@ -66,31 +70,32 @@ class BuildCot():
     def populateSQL(self):
          populateSQL = input("Populate SQL Table for all ETFs? ('y' or 'n'): ")
          if populateSQL == 'y':
-            print('heading to cotEtfSQLP')
+            # print('heading to cotEtfSQLP')
             import cotEtfSQLP
             cotEtfSQLP.start()
 
 
 def main():
-    a = BuildCot()
-    print()
-    newOrExist = input("COT Data: Create new table('new') or update existing table('u')?: ")
-    print()
-    if newOrExist == 'new':
-        print("CAUTION: Creating a new table will delete all current data")
-        print()
-        doubleCheck = input("Type 'y' to verify you want to create a new table: ")
-        if doubleCheck == 'y':
-            a.createSQL()
-            b = a.populateTables('created')
-            print('b: ',b)
-        else:
-            main()
-    else:
-        print("Updating existing table")
-        a.populateTables('updated')
-
-    a.printMessage()
+    a = BuildCotAll()
+    # print()
+    # newOrExist = input("COT Data: Create new table('new') or update existing table('u')?: ")
+    # print()
+    # if newOrExist == 'new':
+    #     print("CAUTION: Creating a new table will delete all current data")
+    #     print()
+    #     doubleCheck = input("Type 'y' to verify you want to create a new table: ")
+    #     if doubleCheck == 'y':
+    #         # a.createSQL()
+    #         a.createSQLAlt1()
+    #         b = a.populateTables('created')
+    #         print('b: ',b)
+    #     else:
+    #         main()
+    # else:
+    #     print("Updating existing table")
+    #     a.populateTables('updated')
+    #
+    # a.printMessage()
     a.createEtfCsv()
     a.populateSQL()
 

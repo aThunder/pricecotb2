@@ -24,20 +24,23 @@ class Csv2SQL():
 
     def createTableName(self,frequency):
         self.frequency = frequency
+        print("Symbol: ",self.symbol)
         print("Frequency: ",self.frequency)
 
         if self.frequency =='d':
             # print('Daily')
-            self.tableName = 'CotSymbolsDataDaily'
-        if self.frequency == 'm':
+            self.tableName = 'CotEtfDataDaily'
+        elif self.frequency == 'm':
             # print('Monthly')
-            self.tableName = 'CotSymbolsDataMonthly'
-        if self.frequency == 'a':
+            self.tableName = 'CotEtfDataMonthly'
+        elif self.frequency == 'a':
             # print('Annual')
-            self.tableName = 'CotSymbolsDataAnnual'
-        if self.frequency == 'w-mon' or 'w-tue' or 'w-wed' or 'w-thu' or 'w-fri':
+            self.tableName = 'CotEtfDataAnnual'
+        elif self.frequency == 'w-mon' or 'w-tue' or 'w-wed' or 'w-thu' or 'w-fri':
             # print('Weekly-Tues')
-            self.tableName = 'CotSymbolsDataWeekly'
+            self.tableName = 'CotEtfDataWeekly'
+        else:
+            ('Cannot find a match for frequency {0}'.format(self.frequency))
 
         print("TableName: ",self.tableName)
 
@@ -93,16 +96,18 @@ class Csv2SQL():
 
     def printMessage(self,whichOne):
         if whichOne == 'c':
-            print()
+            # print()
             print("SQL Table Created")
-        else:
             print()
+        else:
+            # print()
             print("SQL Table Updated")
+            print()
         # self.c.execute(select count(*) from <stxTable1> where ..
 
 # main triggered by setStkCSVFile.py
 def main(symbols,createOrUpdate,ID_NameKey,frequency):
-    print('XYZ: ',symbols,createOrUpdate,ID_NameKey,frequency)
+    # print('XYZ: ',symbols,createOrUpdate,ID_NameKey,frequency)
     # print(symbols)
     # chooseTable = input("Add to existing Table ('a') or create new Table ('c')?: ")
     a = Csv2SQL(symbols,ID_NameKey)
@@ -123,7 +128,7 @@ def main(symbols,createOrUpdate,ID_NameKey,frequency):
 def start():
     print('arrived in cotEtfSQLP')
     #Specify 'c' or 'e' for first item only. All others always 'e'
-    frequency = 'd'.lower()
+    frequency = 'w-tue'.lower()
 
     main(['SPY'], 'c',1,frequency)
     main(['GLD'], 'u',3,frequency)

@@ -21,17 +21,16 @@ class setCSVFile():
         self.symbol = symbol
 
     def accessSite(self,start,end):
-        print('self.symbol: ', self.symbol)
+        print('Symbol: ', self.symbol.upper())
         self.start = start
         self.end = end
         self.timeSeries0 = pullData.DataReader(self.symbol, 'yahoo', self.start, self.end)
-
 
     def weekOrDay(self,freq):
         # self.timeSeries0 = self.timeSeries0.asfreq('W-TUE')
         self.timeSeries0 = self.timeSeries0.asfreq(freq)
 
-        print("Entered stxSetFile1b.py to use existing file")
+        # print("Entered stxSetFile1b.py to use existing file")
         #alternate way to retrieve data
         #self.timeSeries0 = pd.io.data.get_data_yahoo(symbol, self.start, self.end)
         ##for SP500 in above line only use '%5EGSPC' as symbol
@@ -50,17 +49,16 @@ class setCSVFile():
 
     def countRows(self,csv1):
         self.dayCounter = 0
-        #print('csv1: ', csv1)
         for i in range(len(csv1)):
-            # print(i)
             self.dayCounter +=1
         print('days in the file:',self.dayCounter)
+        print()
         return self.dayCounter
 
 #########################################################
 #########################################################
 def main(symbol,choice1a,freq,startDate1,endDate1,ID_NameKey,actionSelected):
-    print('hi again')
+    # print('hi again')
     a = setCSVFile(symbol)
 
     if choice1a == 'e' :
