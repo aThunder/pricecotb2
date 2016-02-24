@@ -12,6 +12,8 @@
 import json
 import urllib.request
 import sqlite3
+# import cotEtfSQLP
+import cotEtfCSV
 
 class BuildCot():
 
@@ -53,11 +55,26 @@ class BuildCot():
             print("{0}: {1}".format(counter,i))
             counter +=1
 
+    def createEtfCsv(self):
+        print()
+        print()
+        # import cotEtfCSV
+        startDate = input("ETF Data: Enter start date. Format: yyyymmdd (example: 20150115): ")
+        endDate = input("Enter end date (Leave blank for most recent date): ")
+        cotEtfCSV.correspondingSymbols(startDate,endDate)
+
+    def populateSQL(self):
+         populateSQL = input("Populate SQL Table for all ETFs? ('y' or 'n'): ")
+         if populateSQL == 'y':
+            print('heading to cotEtfSQLP')
+            import cotEtfSQLP
+            cotEtfSQLP.start()
+
 
 def main():
     a = BuildCot()
     print()
-    newOrExist = input("Create a new table('new') or update existing table('u')?: ")
+    newOrExist = input("COT Data: Create new table('new') or update existing table('u')?: ")
     print()
     if newOrExist == 'new':
         print("CAUTION: Creating a new table will delete all current data")
@@ -74,5 +91,7 @@ def main():
         a.populateTables('updated')
 
     a.printMessage()
+    a.createEtfCsv()
+    a.populateSQL()
 
 if __name__ == '__main__': main()
