@@ -1,4 +1,4 @@
-#Type1CotFormat.py
+#Type2CotFormat.py
 
 '''
     1. Is called by controlCotUpdate.py to populate tables for specified commodities
@@ -6,16 +6,16 @@
 '''
 
 
+
 import json
 import urllib.request
 import sqlite3
 
-class Type1():
+class spCOT():
 
-    def __init__(self,url,ID_NameKey,etf):
+    def __init__(self,url,ID_NameKey,ETF):
         self.url = url
         self.ID_NameKey = ID_NameKey
-        self.etf = etf
         self.conn = sqlite3.connect('allCotEtf.db')
         self.c = self.conn.cursor()
 
@@ -34,7 +34,7 @@ class Type1():
         for line in self.datax['dataset']['data'][0:]: # [0:] range added to allow for specifying range limits to iterate
             # print('day: ',line)
 
-            self.c.execute("INSERT OR IGNORE INTO DataCOT"
+            self.c.execute("INSERT OR IGNORE INTO dataCOT"
                            "(ID_NameKey,Dataset,Database,Name,Date,OpenInt,RptableLong,"
                            "RptableShort,NonRptableLong,NonRptableShort)"
                             " VALUES(?,?,?,?,?,?,?,?,?,?)",
@@ -51,17 +51,29 @@ class Type1():
 
             counter += 1
             self.conn.commit()
-            return self.etf
 
             # db.execute('insert into test(t1, i1) values(?,?)', ('one', 1)) ## sample for format syntax
 
 def main(url,ID_NameKey,ETF):
     print('xxxx: ',ID_NameKey,ETF)
-    a = Type1(url,ID_NameKey,ETF)
+    # url = "https://www.quandl.com/api/v3/datasets/CFTC/TIFF_CME_SC_ALL.json"
+    a = spCOT(url,ID_NameKey,ETF)
     a.getData()
-    x = a.populateSQL()
-    # print('x: ', x)
+    a.populateSQL()
     return ETF
 
 if __name__ == '__main__': main(url,ID_NameKey)
 
+##########
+
+# "dataset_code":"US_F_ALL","database_code":
+# "CFTC","name":"Commitment of Trades - U.S. Treasury Bonds - Futures Only","description":
+# "Commitment of Traders data for U.S. Treasury Bonds"
+
+# 'column_names': ['Date', 'Open Interest', 'Dealer Long Positions', 'Dealer Short Positions',
+        #                  'Dealer Spread Positions', 'Asset Mgr LongPositions', 'Asset Mgr Short Positions',
+        #                  'Asset Mgr Spread Positions', 'Lev Money Long Positions', 'Lev Money Short Positions',
+        #                  'Lev Money Spread Positions', 'Other Reportable Long Positions',
+        #                  'Other Reportable Short Positions', 'Other Reportable Spread Positions',
+        #                  'Total Reportable Long Positions', 'Total Reportable Short Positions',
+        #                  'Non-Reportable Long Positions', 'Non-Reportable Reportable Positions']
