@@ -3,7 +3,8 @@
 '''
     1. Queries 2 SQLite tables (COT & ETFs) and uses Join for results
     2. Performs several calculations and summaries on results
-    3. Weekly data onlygit a
+    3. Weekly data only
+    4.
 '''
 
 
@@ -22,8 +23,27 @@ class spCOT():
         self.diskEngine = create_engine('sqlite:///allCotEtf.db')
         self.recentList =[]
 
-    def innerJoin1(self,criteria1):
+    def checkCotData(self,IDKEY):
+        print(IDKEY)
+        self.cotDataDetail = pd.read_sql_query("SELECT NAME,DATE,OPENINT "
+                                               "FROM DataCOT "
+                                               "WHERE ID_NAMEKEY = {0} "
+                                               "AND DATE > '2014-01-01' ".format(IDKEY),self.diskEngine)
+        print("CotDataDetail: ", self.cotDataDetail)
+
+    def checkEtfData(self,IDKEY):
+        print(IDKEY)
+        self.EtfDataDetail = pd.read_sql_query("SELECT SYMBOL,DATE,CLOSE "
+                                               "FROM CotEtfDataWeekly "
+                                               "WHERE ID_NAMEKEY = {0} "
+                                               "AND DATE > '2015-01-01' ".format(IDKEY),self.diskEngine)
+        print("ETFDetail: ", self.EtfDataDetail)
+
+
+    def innerJoin1(self,criteria1,startDate):
         self.criteria1 = criteria1
+        # startDate = '2015-11-01'
+        print('startDate: ', startDate)
         self.intoPandasJoin1 = pd.read_sql_query("SELECT DataCOT.NAME,"
                                                  " DataCOT.OPENINT, "
                                                  "DataCOT.DATE,"
@@ -37,9 +57,9 @@ class spCOT():
                                                  "INNER JOIN CotEtfDataWeekly "
                                                  "ON DataCOT.ID_NAMEKEY =  CotEtfDataWeekly.ID_NAMEKEY "
                                                  "AND DataCOT.DATE = CotEtfDataWeekly.DATE "
-                                                 "WHERE DataCOT.DATE > '2015-12-15'"
-                                                 "AND NAME LIKE '{0}'"
-                                                 "ORDER BY CotEtfDataWeekly.DATE asc".format(self.criteria1),
+                                                 "WHERE DataCOT.DATE > '{0}' "
+                                                 "AND NAME LIKE '{1}'"
+                                                 "ORDER BY CotEtfDataWeekly.DATE asc".format(startDate,self.criteria1),
                                                  self.diskEngine)
 
         countLinesAll = self.intoPandasJoin1['Date'].count()
@@ -52,7 +72,7 @@ class spCOT():
     def mostRecent(self):
 
         countLines = self.intoPandasJoin1['WkNetRptableChg'].count()
-        print('#Lines: ',countLines)
+        # print('#Lines: ',countLines)
         mostRecent = ("{0}: NetReportable: {1}  WeeklyChg: {2} WkPriceChg: {3}".
                 format(self.intoPandasJoin1['Symbol'][countLines],self.intoPandasJoin1['NetReportable'][countLines],
                 self.intoPandasJoin1['WkNetRptableChg'][countLines],self.intoPandasJoin1['WkPriceChg'][countLines]))
@@ -80,9 +100,14 @@ class spCOT():
 
 def main():
     a = spCOT()
-    criteria5 = ['%S&P%','%Gold%','%Bond%','%Oil%']
+    # criteria5 = ['%S&P%','%Gold%','%Bond%','%Oil%']
+    criteria5 = ['%S&P%']
+    startDate = input("Enter start date (YYYY-MM-DD): ") ## commented out for testing only
+    # startDate = '2015-10-01' ## for testing expediting only
     for i in criteria5:
-        a.innerJoin1(i)
+        # a.checkCotData(1)
+        # a.checkEtfData(1)
+        a.innerJoin1(i,startDate)
         a.mostRecent()
     a.summary1()
         # c= a.plot1()
