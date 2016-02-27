@@ -1,0 +1,15 @@
+Symbol,Name,Industry,Dividend
+AAPL,Apple,Tech,Yes
+MSFT,Microsoft,Tech,Yes
+IBM,IntBusMach,Tech,Yes
+M ,Macys,Retail,No
+PG,P&G,Consumer,Yes
+WMT,WalMart,Retail,Yes
+INTC,Intel,Tech,Yes
+XOM,ExxonMobil,Energy,Yes
+RIG,TransOcean,Energy,No
+JNJ,J&J,Consumer,Yes
+MMM,3M,Industrial,Yes
+BHI,BakerHughes,Energy,Yes
+HAL,Haliburton,Energy,Yes
+GE, General Electric, Industrial,Yes
