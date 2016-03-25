@@ -36,35 +36,53 @@ class stkVolume():
         # self.symbol = ('aapl')
         self.startDate = startDate
         self.numberDays = numberDays + 1
-
-        print('ID KEY: ',IDKEY,self.symbol)
-        # self.stkDataDetail = pd.read_sql_query("SELECT * "
-        #                                        "FROM SymbolsDataDaily "
-        #                                        "WHERE ID_NAMEKEY = {0} "
-        #                                        "AND DATE >= '2016-01-05' "
-        #                                        "AND SYMBOL IN ('aapl')"
-        #                                        "AND ID > 5 "
-        #                                        " ".format(IDKEY,self.symbol),self.diskEngine)
-
-        # self.stkDataDetail = pd.read_sql_query("SELECT SYMBOL, date('now','-1 day'),CLOSE,date " #max(DATE), CLOSE " #date('now','-1 day'), CLOSE " # date('now') - 1 day "#max(date)-1,SYMBOL,CLOSE "
-        #                                        "FROM SymbolsDataDaily "
-        #                                        "WHERE SYMBOL IN ('aapl') "
-        #                                        " AND date('now',-5 days) "
-        #                                        " ".format(IDKEY,self.symbol),self.diskEngine)
-        #
-        self.stkDataDetail = pd.read_sql_query("SELECT SYMBOL,DATE,CLOSE,VOL "
-                                               "FROM (SELECT * FROM SymbolsDataDaily "
-                                               "WHERE SYMBOL IN ('{0}')"
-                                               "ORDER BY DATE DESC LIMIT {1}) "
-                                               "ORDER BY DATE ASC "
-                                               " ".format(self.symbol,self.numberDays),self.diskEngine)
-
-
-
-        # print("StkDataDetail: ", self.stkDataDetail[['ID','date','Symbol','open','high','low','close','vol']])
-        print("StkDataDetail: ", self.stkDataDetail)
         print()
-        self.df = self.stkDataDetail
+        print('ID KEY: ',IDKEY,self.symbol.upper())
+
+        status1 = True
+
+        try:
+            # self.stkDataDetail = pd.read_sql_query("SELECT * "
+            #                                        "FROM SymbolsDataDaily "
+            #                                        "WHERE ID_NAMEKEY = {0} "
+            #                                        "AND DATE >= '2016-01-05' "
+            #                                        "AND SYMBOL IN ('aapl')"
+            #                                        "AND ID > 5 "
+            #                                        " ".format(IDKEY,self.symbol),self.diskEngine)
+
+            # self.stkDataDetail = pd.read_sql_query("SELECT SYMBOL, date('now','-1 day'),CLOSE,date " #max(DATE), CLOSE " #date('now','-1 day'), CLOSE " # date('now') - 1 day "#max(date)-1,SYMBOL,CLOSE "
+            #                                        "FROM SymbolsDataDaily "
+            #                                        "WHERE SYMBOL IN ('aapl') "
+            #                                        " AND date('now',-5 days) "
+            #                                        " ".format(IDKEY,self.symbol),self.diskEngine)
+            #
+            self.stkDataDetail = pd.read_sql_query("SELECT SYMBOL,DATE,CLOSE,VOL "
+                                                   "FROM (SELECT * FROM SymbolsDataDaily "
+                                                   "WHERE SYMBOL IN ('{0}')"
+                                                   "ORDER BY DATE DESC LIMIT {1}) "
+                                                   "ORDER BY DATE ASC "
+                                                   " ".format(self.symbol,self.numberDays),self.diskEngine)
+
+
+
+             # print("StkDataDetail: ", self.stkDataDetail[['ID','date','Symbol','open','high','low','close','vol']])
+            print("StkDataDetail: ", self.stkDataDetail['date'][1])
+            print()
+            self.df = self.stkDataDetail
+            # if self.df['Index'] == []:
+            #     print('MMMMMMMMMMMOOOOOO')
+
+            status1 = True
+            return status1
+
+        except:
+            print("******{0} Not in Database******".format(self.symbol))
+            print()
+            print("==================================")
+            status1 = False
+            return status1
+
+
 
     def volumeChg(self):
         self.volChg = self.stkDataDetail['vol']-self.stkDataDetail['vol'][1]
@@ -107,6 +125,7 @@ class stkVolume():
 
     def onBalanceVolume(self):
         self.runningVol = 0
+        obvFirstLast = []
         # # print("RunningVolume: ", self.df[['date','Symbol','close','changeClose','vol','runVol']])
         counter = 0
         for i in self.df['close'].diff():
@@ -124,10 +143,17 @@ class stkVolume():
                 # print("NO")
                 self.runningVol -= self.df['vol'][counter]
                 print("OBVMinus: ", self.df['date'][counter],self.runningVol)
-            print()
 
+            obvFirstLast.append(self.runningVol)
+            # print()
 
             counter += 1
+        firstOBV = obvFirstLast[1]
+        lastOBV = obvFirstLast[counter-1]
+        print()
+        print("OBV:first,last: ",firstOBV,lastOBV)
+        print("OBV Change: ",lastOBV-firstOBV)
+        print()
 
         # print(self.df['date'][5:8])
 
@@ -192,6 +218,7 @@ class stkVolume():
         print("First,Last: ",firstPrice, mostRecentPrice)
         print("PriceChange: ",mostRecentPrice-firstPrice)
         print("% Change: ", ((mostRecentPrice-firstPrice)/firstPrice)*100)
+        print("==================================")
 
     def grouping(self):
         group1 = self.df.groupby()
@@ -213,27 +240,32 @@ class stkVolume():
 
 def main():
     a = stkVolume()
-    numberOfDays = 10
+    numberOfDays = 15
     # a.numberDaysToDate(numberOfDays)
     # criteria5 = ['%S&P%','%Gold%','%Bond%','%Oil%']
-    criteria5 = ['aapl','gld']
+    criteria5 = ['aapl','mmm','gld']
     # startDate = input("Enter start date (YYYY-MM-DD): ") ## commented out for testing only
     startDate = '2015-10-01' ## for testing expediting only
 
     for i in criteria5:
-        a.retrieveStkData(i,99,startDate,15)
+        check1 = a.retrieveStkData(i,99,startDate,numberOfDays)
+        # print("check1: ", check1)
         # a.volumeChg()
         # a.mask1()
         # a.orderData()
         # # a.grouping()
         # # a.priceVolStats()
-        a.onBalanceVolume()
-        a.avgVolumeUpDown()
-        a.priceMove()
-        # a.checkEtfData(1)
-        # a.innerJoin1(i,startDate)
-        # a.mostRecent()
-        # c= a.plot1()
+        if check1:
+            a.onBalanceVolume()
+            a.avgVolumeUpDown()
+            a.priceMove()
+            # a.checkEtfData(1)
+            # a.innerJoin1(i,startDate)
+            # a.mostRecent()
+            # c= a.plot1()
+        else:
+            # print('NOOOOOO')
+            print()
     # a.summary1()
 
 if __name__ == '__main__': main()
