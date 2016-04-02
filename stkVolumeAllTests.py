@@ -171,7 +171,7 @@ class stkVolume():
         print("PriceChange: ",mostRecentPrice-firstPrice)
         print("% Change: ", ((mostRecentPrice-firstPrice)/firstPrice)*100)
         print("==================================")
-
+        return
     def movAvg(self):
         self.dfFullSet['rolling'] = pd.rolling_mean(self.dfFullSet['vol'], self.numberDays - 1)
         print("{0}-day moving average for {1} is {2}".format(self.numberDays - 1, self.symbol,
@@ -222,15 +222,26 @@ def main(choice1,symbol,dfFullSet,dfSubSet,dfOverallMktSet,numberDays):
     #         # # a.grouping()
     if choice1 == 1:
         print("Choice1: ",choice1)
+        print("1. Volume Up/Down")
         a.priceVolStats()
         a.onBalanceVolume()
         a.avgVolumeUpDown()
         a.priceMove()
     if choice1 == 2:
+        print("2. Volume Moing Averages")
         print("Choice1: ",choice1)
         a.movAvg()
     if choice1 == 3:
         print("Choice1: ",choice1)
+        print("Volume Stock:Market Ratios")
         a.vsOverallVolume()
+    # if choice == 4:
+    #     Print("So Long")
+    #     break
+
+    print("Request Completed. Select another choice")
+    print()
+    import ControlStkVolume
+    ControlStkVolume.main()
 
 if __name__ == '__main__': main(choice1,symbol,fullSet1,subSet1,overallMktSet,numberDays)

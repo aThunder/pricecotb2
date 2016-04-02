@@ -107,7 +107,16 @@ class QueryData():
     def returnOverallMktSet1(self):
         return self.dfOverallMktSet
 
-    # def chooseIndicators(self):
+    def chooseIndicators(self):
+        print("Select one of these Volume Indicators: ")
+        print("   1. Volume Up/Down")
+        print("   2. Volume Mov Avgs")
+        print("   3. Volume Stock:Market Ratios")
+        print("   4. Exit")
+        print()
+        choice1 = int(input("Enter number here: "))
+        print("Choice1: ",choice1)
+        return choice1
 
     def callStkVolumeUpDown(self,symbol1, fullSet1a, subSet1a, overallMktSet1a, numberOfDays):
         import stkVolumeAllTests
@@ -142,22 +151,31 @@ def main():
             print("Data collected. Moving On")
             print("===================================")
 
-            print("Select one of these Volume Indicators: ")
-            print("   1. Volume Up/Down")
-            print("   2. Volume Mov Avgs")
-            print("   3. Volume Stock:Market Ratios")
-            print()
-            choice1 = int(input("Enter number here: "))
-            print("Choice1: ",choice1)
-            import stkVolumeAllTests
+            # print("Select one of these Volume Indicators: ")
+            # print("   1. Volume Up/Down")
+            # print("   2. Volume Mov Avgs")
+            # print("   3. Volume Stock:Market Ratios")
+            # print()
+            # choice1 = int(input("Enter number here: "))
+            # print("Choice1: ",choice1)
+            # import stkVolumeAllTests
+            choice1 = a.chooseIndicators()
+            print("Type: ",type(choice1))
             if choice1 == 1:
+                print("Yes One")
                 a.callStkVolumeUpDown(i, fullSet1a, subSet1a, overallMktSet1a, numberOfDays)
-            if choice1 == 2:
+            elif choice1 == 2:
+                print("Yes Two")
                 a.callStkVolumeMovAvgs(i, fullSet1a, subSet1a, overallMktSet1a, numberOfDays)
-            if choice1 == 3:
+            elif choice1 == 3:
+                print("Yes Three")
                 a.callStkVolumeMktRto(i, fullSet1a, subSet1a, overallMktSet1a, numberOfDays)
-            elif:
+            elif choice1 == 4:
+                print("Bye")
+                break
+            else:
                 print("**********Invalid Entry. Try Again**********")
+                a.chooseIndicators()
 
 
         else:
